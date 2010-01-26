@@ -1,5 +1,6 @@
 package cuke4duke.mojo;
 
+import cuke4duke.ant.GemBundlerTask;
 import cuke4duke.ant.GemTask;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -40,6 +41,12 @@ public abstract class AbstractJRubyMojo extends AbstractMojo {
      * @parameter expression="${cucumber.gemDirectory}"
      */
     protected File gemDirectory;
+
+    /**
+     * @parameter expression="${cucumber.gemFile}"
+     */
+    protected File gemFile;
+
 
     /**
      * The project compile classpath.
@@ -102,6 +109,17 @@ public abstract class AbstractJRubyMojo extends AbstractMojo {
         gem.setProject(getProject());
         gem.setArgs(gemArgs);
         gem.execute();
+    }
+
+    protected void bundleGems(File gemFile) throws MojoExecutionException {
+        installGem("install bundler");
+        GemBundlerTask bundle = new GemBundlerTask();
+        if (gemDirectory != null && gemDirectory.exists()) {
+            bundle.setDir(gemDirectory);
+        }
+        bundle.setProject(getProject());
+        bundle.setGemFile(gemFile);
+        bundle.execute();
     }
 
     protected File jrubyHome() {

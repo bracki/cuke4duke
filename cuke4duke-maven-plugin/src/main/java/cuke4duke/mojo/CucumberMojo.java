@@ -5,6 +5,7 @@ import cuke4duke.internal.Utils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.tools.ant.types.Commandline;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +26,11 @@ public class CucumberMojo extends AbstractJRubyMojo {
     protected boolean installGems = false;
 
     /**
+     * @parameter expression="${cucumber.bundleGems}"
+     */
+    protected boolean bundleGems = false;
+
+    /**
      * Will cause the project build to look successful, rather than fail, even if there are Cucumber test failures.
      * This can be useful on a continuous integration server, if your only option to be able to collect output files,
      * is if the project builds successfully.
@@ -32,6 +38,11 @@ public class CucumberMojo extends AbstractJRubyMojo {
      * @parameter expression="${cucumber.failOnError}"
      */
     protected boolean failOnError = true;
+
+    /**
+     * @parameter
+     */
+    protected File gemFile;
 
     /**
      * @parameter
@@ -61,10 +72,14 @@ public class CucumberMojo extends AbstractJRubyMojo {
     protected List<String> jvmArgs;
 
     public void execute() throws MojoExecutionException {
-        if (installGems) {
+        if (installGems && !bundleGems) {
             for (String gemSpec : gems) {
                 installGem(gemSpec);
             }
+        }
+
+        if (!installGems && bundleGems) {
+            bundleGems(gemFile);
         }
 
         CucumberTask cucumber = cucumber(allCucumberArgs());

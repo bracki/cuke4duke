@@ -50,6 +50,7 @@
           <jvmArgs>
             <jvmArg>-Xmx384m</jvmArg>
           </jvmArgs>
+          <gemFile>Gemfile</gemFile>  
           <gems>
             <gem>install celerity --version 0.0.7</gem>
             <gem>install rspec --version 1.2.9</gem>
