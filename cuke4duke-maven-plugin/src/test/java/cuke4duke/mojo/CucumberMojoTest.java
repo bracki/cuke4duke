@@ -44,7 +44,7 @@ public class CucumberMojoTest {
         Scanner scanner = new Scanner(gemFile).useDelimiter("\\Z");
         String contents = scanner.next();
         scanner.close();
-        assertTrue(contents.matches("gem \"gem\", \"1\.2\.3\"");
+        assertTrue(contents.matches("gem \"gem\", \"1\\.2\\.3\""));
     }
 
     @Test
