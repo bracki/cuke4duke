@@ -47,7 +47,7 @@ public class CucumberMojo extends AbstractJRubyMojo {
     /**
      * @parameter
      */
-    protected List<String> gems;
+    protected List<Gem> gems;
 
     /**
      * @parameter
@@ -72,10 +72,14 @@ public class CucumberMojo extends AbstractJRubyMojo {
     protected List<String> jvmArgs;
 
     public void execute() throws MojoExecutionException {
+        /*
         if (installGems && !bundleGems) {
             for (String gemSpec : gems) {
                 installGem(gemSpec);
             }
+        }*/
+        for (Gem gem : gems) {
+            getLog().info(gem.getName() + " " + gem.getVersion());
         }
 
         if (!installGems && bundleGems) {
@@ -90,6 +94,10 @@ public class CucumberMojo extends AbstractJRubyMojo {
                 throw new MojoExecutionException("JRuby failed.", e);
             }
         }
+    }
+
+    public File gemFileFromGems() {
+        return new File("blah.txt");
     }
 
     public CucumberTask cucumber(String args) throws MojoExecutionException {
