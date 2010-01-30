@@ -51,14 +51,18 @@
             <jvmArg>-Xmx384m</jvmArg>
           </jvmArgs>
           <gems>
-              <gem>
-                  <name>cucumber</name>
-                  <version>0.2.2</version>
-              </gem>
-              <gem>
-                  <name>celerity</name>
-                  <version>0.7.5</version>
-              </gem>
+            <gem>
+              <name>cuke4duke</name>
+              <version>0.2.2</version>
+            </gem>
+            <gem>
+              <name>celerity</name>
+              <version>0.7.5</version>
+            </gem>
+            <gem>
+              <name>rspec</name>
+              <version>1.3.0</version>
+            </gem>
           </gems>
           <cucumberArgs>
             <cucumberArg>--color</cucumberArg>

@@ -109,15 +109,26 @@ public class CucumberMojo extends AbstractJRubyMojo {
                 writer.printf("gem \"%s\", \"%s\"", gem.getName(), gem.getVersion());
                 writer.println();
             }
-            writer.printf("bundle_path \"%s\"", new File(jrubyHome(), "gems").getAbsolutePath());
+            writer.printf("bundle_path \"%s\"", relativeToJrubyHome("gems"));
             writer.println();
-            writer.printf("bin_path \"%s\"", new File(jrubyHome(), "bin").getAbsolutePath());
+            writer.printf("bin_path \"%s\"", relativeToJrubyHome("bin"));
             writer.println();
+            writer.println("source \"http://gems.github.com\"");
             writer.close();
             return gemFile;
         } catch (IOException e) {
             throw new MojoExecutionException("Couldn't create Gemfile.", e);
         }
+    }
+
+    /**
+     * Get an absolute path relative to {@link #jrubyHome()}. Replace file separator with "/" so we
+     * have Ruby compliant path representations. At least on Windows.
+     * @param child the child
+     * @return a string representing an absolute path
+     */
+    protected String relativeToJrubyHome(String child) {
+        return new File(jrubyHome(), child).getAbsolutePath().replace(File.separator, "/");
     }
 
     public CucumberTask cucumber(String args) throws MojoExecutionException {

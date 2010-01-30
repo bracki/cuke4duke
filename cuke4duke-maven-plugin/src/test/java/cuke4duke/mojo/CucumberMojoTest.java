@@ -45,12 +45,12 @@ public class CucumberMojoTest {
         File gemFile = mojo.gemFileFromGems();
         assertTrue("Gemfile should have been created.", gemFile.exists());
         // Now look for expected tokens in file.
-        Scanner scanner = new Scanner(gemFile).useDelimiter("\\Z");
+        Scanner scanner = new Scanner(gemFile).useDelimiter("\\Z"); // TODO Does this work on non-Windows systems?
         String contents = scanner.next();
         scanner.close();
         assertTrue("Gemfile should have specified gem and version", contents.contains("gem \"gem\", \"1.2.3\""));
-        assertTrue("Gemfile should have bundle_path set to #jrubyHome()/gems", contents.contains("bundle_path \""+ new File(mojo.jrubyHome(), "gems").getAbsolutePath() + "\""));
-        assertTrue("Gemfile should have bin_path set to #jrubyHome()/bin", contents.contains("bin_path \""+ new File(mojo.jrubyHome(), "bin").getAbsolutePath() + "\""));
+        assertTrue("Gemfile should have bundle_path set to #jrubyHome()/gems", contents.contains("bundle_path \""+ mojo.relativeToJrubyHome("gems") + "\""));
+        assertTrue("Gemfile should have bin_path set to #jrubyHome()/bin", contents.contains("bin_path \""+ mojo.relativeToJrubyHome("bin") + "\""));
     }
 
     @Test
