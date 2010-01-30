@@ -43,12 +43,6 @@ public abstract class AbstractJRubyMojo extends AbstractMojo {
     protected File gemDirectory;
 
     /**
-     * @parameter expression="${cucumber.gemFile}"
-     */
-    protected File gemFile;
-
-
-    /**
      * The project compile classpath.
      *
      * @parameter default-value="${project.compileClasspathElements}"
@@ -112,6 +106,7 @@ public abstract class AbstractJRubyMojo extends AbstractMojo {
     }
 
     protected void bundleGems(File gemFile) throws MojoExecutionException {
+        // TODO do this only once.
         installGem("install bundler");
         GemBundlerTask bundle = new GemBundlerTask();
         if (gemDirectory != null && gemDirectory.exists()) {

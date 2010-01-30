@@ -15,6 +15,7 @@ public class GemBundlerTask extends JRubyTask {
         createArg().setValue("-S");
         createArg().setValue("gem");
         createArg().setValue("bundle");
+        createArg().setValue("--backtrace");
         createArg().setValue("-m");
         createArg().setFile(gemFile);
         super.execute();

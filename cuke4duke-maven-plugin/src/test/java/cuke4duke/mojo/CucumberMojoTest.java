@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.DefaultArtifactRepository;
@@ -23,6 +25,7 @@ public class CucumberMojoTest {
     @Before
     public void setUp() {
         mojo = new CucumberMojo();
+        mojo.buildDirectory = new File(".");
         mojo.launchDirectory = new File(".");
         mojo.mavenProject = new MavenProject();
         mojo.mavenProject.setFile(new File("../."));
@@ -40,11 +43,14 @@ public class CucumberMojoTest {
         g.setVersion("1.2.3");
         mojo.gems.add(g);
         File gemFile = mojo.gemFileFromGems();
-        assertTrue(gemFile.exists());
+        assertTrue("Gemfile should have been created.", gemFile.exists());
+        // Now look for expected tokens in file.
         Scanner scanner = new Scanner(gemFile).useDelimiter("\\Z");
         String contents = scanner.next();
         scanner.close();
-        assertTrue(contents.matches("gem \"gem\", \"1\\.2\\.3\""));
+        assertTrue("Gemfile should have specified gem and version", contents.contains("gem \"gem\", \"1.2.3\""));
+        assertTrue("Gemfile should have bundle_path set to #jrubyHome()/gems", contents.contains("bundle_path \""+ new File(mojo.jrubyHome(), "gems").getAbsolutePath() + "\""));
+        assertTrue("Gemfile should have bin_path set to #jrubyHome()/bin", contents.contains("bin_path \""+ new File(mojo.jrubyHome(), "bin").getAbsolutePath() + "\""));
     }
 
     @Test

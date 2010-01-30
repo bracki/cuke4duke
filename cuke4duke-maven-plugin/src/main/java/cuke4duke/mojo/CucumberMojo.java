@@ -5,7 +5,7 @@ import cuke4duke.internal.Utils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.tools.ant.types.Commandline;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +31,15 @@ public class CucumberMojo extends AbstractJRubyMojo {
     protected boolean bundleGems = false;
 
     /**
+     * The target directory of the compiler if fork is true.
+     *
+     * @parameter default-value="${project.build.directory}"
+     * @required
+     * @readonly
+     */
+    protected File buildDirectory;
+
+    /**
      * Will cause the project build to look successful, rather than fail, even if there are Cucumber test failures.
      * This can be useful on a continuous integration server, if your only option to be able to collect output files,
      * is if the project builds successfully.
@@ -38,11 +47,6 @@ public class CucumberMojo extends AbstractJRubyMojo {
      * @parameter expression="${cucumber.failOnError}"
      */
     protected boolean failOnError = true;
-
-    /**
-     * @parameter
-     */
-    protected File gemFile;
 
     /**
      * @parameter
@@ -78,12 +82,9 @@ public class CucumberMojo extends AbstractJRubyMojo {
                 installGem(gemSpec);
             }
         }*/
-        for (Gem gem : gems) {
-            getLog().info(gem.getName() + " " + gem.getVersion());
-        }
 
         if (!installGems && bundleGems) {
-            bundleGems(gemFile);
+            bundleGems(gemFileFromGems());
         }
 
         CucumberTask cucumber = cucumber(allCucumberArgs());
@@ -96,8 +97,27 @@ public class CucumberMojo extends AbstractJRubyMojo {
         }
     }
 
-    public File gemFileFromGems() {
-        return new File("blah.txt");
+    public File gemFileFromGems() throws MojoExecutionException {
+        if (!buildDirectory.exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            buildDirectory.mkdirs();
+        }
+        try {
+            File gemFile = new File(buildDirectory, "Gemfile");
+            PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(gemFile)));
+            for (Gem gem : gems) {
+                writer.printf("gem \"%s\", \"%s\"", gem.getName(), gem.getVersion());
+                writer.println();
+            }
+            writer.printf("bundle_path \"%s\"", new File(jrubyHome(), "gems").getAbsolutePath());
+            writer.println();
+            writer.printf("bin_path \"%s\"", new File(jrubyHome(), "bin").getAbsolutePath());
+            writer.println();
+            writer.close();
+            return gemFile;
+        } catch (IOException e) {
+            throw new MojoExecutionException("Couldn't create Gemfile.", e);
+        }
     }
 
     public CucumberTask cucumber(String args) throws MojoExecutionException {
