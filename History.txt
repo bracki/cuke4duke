@@ -1,3 +1,7 @@
+== 0.2.3 2010-01-30
+
+* Try to add -Dcucumber.bundleGems=true functionality. Uses the bundler gem to handle gem installation. Does not work yet.
+
 == 0.2.3 2010-01-18
 
 === New Features
