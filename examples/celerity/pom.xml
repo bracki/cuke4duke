@@ -50,11 +50,15 @@
           <jvmArgs>
             <jvmArg>-Xmx384m</jvmArg>
           </jvmArgs>
-          <gemFile>Gemfile</gemFile>  
           <gems>
-            <gem>install celerity --version 0.0.7</gem>
-            <gem>install rspec --version 1.2.9</gem>
-            <gem>install cuke4duke --version 0.2.3</gem>
+              <gem>
+                  <name>cucumber</name>
+                  <version>0.2.2</version>
+              </gem>
+              <gem>
+                  <name>celerity</name>
+                  <version>0.7.5</version>
+              </gem>
           </gems>
           <cucumberArgs>
             <cucumberArg>--color</cucumberArg>
